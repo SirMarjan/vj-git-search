@@ -1,8 +1,25 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useDialog } from 'primevue'
+import GitlabApiOptions from './GitlabApiOptions.vue'
+
+const dialog = useDialog()
+
+const onClick = (): void => {
+  dialog.open(GitlabApiOptions, {
+    props: {
+      header: 'Gitlab Api options',
+      closable: false,
+      style: {
+        width: '50vw',
+      },
+    },
+  })
+}
+</script>
 
 <template>
   <header>
-    <PvButton>Options</PvButton>
+    <PvButton @click="onClick">Options</PvButton>
   </header>
 </template>
 

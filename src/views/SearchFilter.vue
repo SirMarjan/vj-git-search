@@ -8,7 +8,7 @@ import { useCacheTransformedValue } from '@/composables/useCachedValue'
 import { collapseGroups, isGroupsProject } from '@/services/gitlabModelsTransformers'
 import { computeShortName } from '@/commons/shortName'
 
-interface Form {
+interface SearchFilterForm {
   selectedGroups: Group[]
   selectedProjects: Project[]
   searchInAllProjects: boolean
@@ -23,7 +23,7 @@ const groupsProjectsLoad = ref<boolean>(false)
 const serverDataStore = useServerDataStore()
 const searchStore = useSearchStore()
 
-const initialValues = ref<Form>({
+const initialValues = ref<SearchFilterForm>({
   selectedGroups: [],
   selectedProjects: [],
   searchInAllProjects: true,
@@ -59,7 +59,7 @@ const onSearchInAllProjectsChange = (value: boolean): void => {
 
 const onFormSubmit = (e: FormSubmitEvent): void => {
   if (e.valid) {
-    const values = e.values as Form
+    const values = e.values as SearchFilterForm
     void searchStore.search(
       values.selectedGroups,
       values.searchInAllProjects,
