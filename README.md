@@ -2,6 +2,11 @@
 
 Simply attemp of rewrite gitlab-ce-tools for vue practice
 
+1. Open options
+2. Input API key (Personal access tokens) with read permission and url to gitlab instance e.g. https://gitlab.com
+3. Refresh :-)
+4. Saddly your project need be in group and elasticsearch for now
+
 # Standart VUE3 Header
 
 # vj-git-search
