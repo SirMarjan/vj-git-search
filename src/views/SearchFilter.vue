@@ -119,7 +119,7 @@ onMounted(async () => {
               <PvChip
                 :label="cachedGroupsShortName.getValue(slotProps.value)"
                 removable
-                @remove="(event) => slotProps.removeCallback(event, slotProps.value)"
+                @remove="(event: Event) => slotProps.removeCallback(event, slotProps.value)"
               />
             </template>
           </PvMultiSelect>
@@ -154,7 +154,7 @@ onMounted(async () => {
               <PvChip
                 :label="cachedProjectsShortName.getValue(slotProps.value)"
                 removable
-                @remove="(event) => slotProps.removeCallback(event, slotProps.value)"
+                @remove="(event: Event) => slotProps.removeCallback(event, slotProps.value)"
               />
             </template>
           </PvMultiSelect>
