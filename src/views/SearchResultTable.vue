@@ -177,10 +177,15 @@ const expandOrCollapseNode = (node: TreeNode): void => {
             <span class="file-label">
               {{ slotProps.node.label }}
             </span>
-            <PvOverlayBadge value="2" size="small">
+            <PvOverlayBadge :value="slotProps.node.children?.length ?? 0" size="small">
               <i class="pi pi-file rotate-x"></i>
             </PvOverlayBadge>
-            <PvOverlayBadge value="2" size="small">
+            <PvOverlayBadge
+              :value="
+                (slotProps.node.children ?? []).reduce((acc, val) => acc + val.data.length, 0)
+              "
+              size="small"
+            >
               <i class="pi pi-search"></i>
             </PvOverlayBadge>
           </div>
@@ -188,10 +193,11 @@ const expandOrCollapseNode = (node: TreeNode): void => {
       </template>
       <template #file="slotProps">
         <div class="row-group" @click="showFile(slotProps.node.data)">
+          <i class="pi pi-file rotate-x"></i>
           <span class="file-label">
             {{ slotProps.node.label }}
           </span>
-          <PvOverlayBadge value="2" size="small">
+          <PvOverlayBadge :value="slotProps.node.data.length" size="small">
             <i class="pi pi-search"></i>
           </PvOverlayBadge>
         </div>
@@ -213,12 +219,16 @@ const expandOrCollapseNode = (node: TreeNode): void => {
 .row-group {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 12px;
   padding: 4px;
   cursor: pointer;
 
   i.pi {
     font-size: 1.3rem;
+  }
+
+  :deep(.p-badge) {
+    padding: 0;
   }
 }
 
