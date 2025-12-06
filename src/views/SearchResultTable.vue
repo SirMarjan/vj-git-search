@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TreeNode } from 'primevue/treenode'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useDialog } from 'primevue'
 import type { CodeDisplayInput } from './CodeDisplay.vue'
 import CodeDisplay from './CodeDisplay.vue'
@@ -15,6 +15,8 @@ type FilePath = string
 const searchStore = useSearchStore()
 const serverData = useServerDataStore()
 const dialog = useDialog()
+
+const expandedKeys = ref<Record<string, boolean>>({})
 
 const nodes = computed(() => {
   const searchResult = searchStore.searchResult
@@ -59,7 +61,8 @@ function groupSearchResults(
   return grouped
 }
 
-function showFile(searchResults: BlobSearchResult[], projects: Project[]): void {
+function showFile(searchResults: BlobSearchResult[]): void {
+  const projects = serverData.projects
   const searchResult = searchResults[0]
   const project = notNullish(projects.find((it) => it.id === searchResult.project_id))
   const filePath = searchResult.path
@@ -72,6 +75,10 @@ function showFile(searchResults: BlobSearchResult[], projects: Project[]): void 
     data,
     props: {
       header: filePath,
+      modal: true,
+      style: {
+        width: '90vw',
+      },
     },
   })
 }
@@ -90,7 +97,6 @@ function buildTreeNodes(
         key: projectId.toString(),
         label: project.path_with_namespace,
         leaf: false,
-        icon: 'pi pi-folder',
         children: [],
       }
 
@@ -101,7 +107,6 @@ function buildTreeNodes(
           type: 'file',
           leaf: true,
           data: searchResults,
-          icon: 'pi pi-file',
         })
       }
 
@@ -110,6 +115,33 @@ function buildTreeNodes(
   }
 
   return treeNodes
+}
+
+const expandAll = (): void => {
+  for (const node of nodes.value) {
+    expandNodeAndChilderns(node)
+  }
+
+  expandedKeys.value = { ...expandedKeys.value }
+}
+
+const collapseAll = (): void => {
+  expandedKeys.value = {}
+}
+
+const expandNodeAndChilderns = (node: TreeNode): void => {
+  if (node.children != null && node.children.length !== 0) {
+    expandedKeys.value[node.key] = true
+
+    for (const child of node.children) {
+      expandNodeAndChilderns(child)
+    }
+  }
+}
+
+const expandOrCollapseNode = (node: TreeNode): void => {
+  expandedKeys.value[node.key] = !expandedKeys.value[node.key]
+  expandedKeys.value = { ...expandedKeys.value }
 }
 </script>
 
@@ -120,17 +152,77 @@ function buildTreeNodes(
   >
     {{ progressMessage }}
   </PvProgressBar>
-  <PvTree :value="nodes">
-    <template #file="slotProps">
-      <span class="file-label" @click="showFile(slotProps.node.data, serverData.projects)">
-        {{ slotProps.node.label }}
-      </span>
-    </template>
-  </PvTree>
+  <div v-if="nodes.length > 0">
+    <div class="button-group">
+      <PvButton
+        type="button"
+        icon="pi pi-plus"
+        label="Expand All"
+        size="small"
+        @click="expandAll"
+      />
+      <PvButton
+        type="button"
+        icon="pi pi-minus"
+        label="Collapse All"
+        size="small"
+        @click="collapseAll"
+      />
+    </div>
+    <PvTree :value="nodes" :expanded-keys="expandedKeys">
+      <template #default="slotProps">
+        <div>
+          <div class="row-group" @click="expandOrCollapseNode(slotProps.node)">
+            <i class="pi pi-folder"></i>
+            <span class="file-label">
+              {{ slotProps.node.label }}
+            </span>
+            <PvOverlayBadge value="2" size="small">
+              <i class="pi pi-file rotate-x"></i>
+            </PvOverlayBadge>
+            <PvOverlayBadge value="2" size="small">
+              <i class="pi pi-search"></i>
+            </PvOverlayBadge>
+          </div>
+        </div>
+      </template>
+      <template #file="slotProps">
+        <div class="row-group" @click="showFile(slotProps.node.data)">
+          <span class="file-label">
+            {{ slotProps.node.label }}
+          </span>
+          <PvOverlayBadge value="2" size="small">
+            <i class="pi pi-search"></i>
+          </PvOverlayBadge>
+        </div>
+      </template>
+    </PvTree>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
 .file-label {
   cursor: pointer;
+}
+
+.row-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 4px;
+  cursor: pointer;
+
+  i.pi {
+    font-size: 1.3rem;
+  }
+}
+
+.rotate-x {
+  transform: scaleX(-1);
 }
 </style>

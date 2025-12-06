@@ -9,6 +9,7 @@ const onClick = (): void => {
     props: {
       header: 'Gitlab Api options',
       closable: false,
+      modal: true,
       style: {
         width: '50vw',
       },

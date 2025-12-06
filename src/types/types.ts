@@ -178,6 +178,7 @@ export interface Project {
   id: number
   name: string
   default_branch: string
+  name_with_namespace: string
   path_with_namespace: string
 }
 

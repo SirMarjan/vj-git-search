@@ -16,6 +16,7 @@ declare module 'vue' {
     PvForm: typeof import('@primevue/forms/form')['default']
     PvInputText: typeof import('primevue/inputtext')['default']
     PvMultiSelect: typeof import('primevue/multiselect')['default']
+    PvOverlayBadge: typeof import('primevue/overlaybadge')['default']
     PvProgressBar: typeof import('primevue/progressbar')['default']
     PvProgressSpinner: typeof import('primevue/progressspinner')['default']
     PvToggleSwitch: typeof import('primevue/toggleswitch')['default']

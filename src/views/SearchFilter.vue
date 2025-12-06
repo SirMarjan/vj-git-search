@@ -46,7 +46,12 @@ const collapsedSelectedGroups = computed(() => {
 
 const projectsToSelect = computed(() => {
   const collapsedSelectedGroupsValue = collapsedSelectedGroups.value
-  return serverDataStore.projects.filter((it) => isGroupsProject(collapsedSelectedGroupsValue, it))
+  return serverDataStore.projects
+    .slice()
+    .filter((it) => isGroupsProject(collapsedSelectedGroupsValue, it))
+    .sort((a: { path_with_namespace: string }, b: { path_with_namespace: string }) =>
+      a.path_with_namespace.localeCompare(b.path_with_namespace),
+    )
 })
 
 const onSelectedGroupsChange = (groups?: Group[]): void => {
@@ -112,7 +117,7 @@ onMounted(async () => {
             :virtual-scroller-options="{ itemSize: 30 }"
             :loading="serverDataStore.groups.length === 0"
             :options="groupsToSelect"
-            option-label="full_name"
+            option-label="full_path"
             @update:model-value="onSelectedGroupsChange"
           >
             <template #chip="slotProps">
