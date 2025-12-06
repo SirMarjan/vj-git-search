@@ -182,7 +182,10 @@ const expandOrCollapseNode = (node: TreeNode): void => {
             </PvOverlayBadge>
             <PvOverlayBadge
               :value="
-                (slotProps.node.children ?? []).reduce((acc, val) => acc + val.data.length, 0)
+                (slotProps.node.children ?? []).reduce(
+                  (acc: number, val: TreeNode) => acc + val.data.length,
+                  0,
+                )
               "
               size="small"
             >
